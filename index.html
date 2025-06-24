@@ -312,13 +312,9 @@
       const game = gameSelect.value;
       const userid = document.getElementById('userid').value;
       const metode = document.getElementById('metode').value;
-      const firstTime = document.getElementById('firstTime').checked;
       const selectedIndex = parseInt(nominalInput.value);
       const selectedOption = priceList[game][selectedIndex];
       let finalPrice = selectedOption.value;
-
-      if (firstTime && selectedOption.discount) {
-        finalPrice -= finalPrice * selectedOption.discount;
       }
 
       const waktu = new Date().toLocaleString('id-ID');
