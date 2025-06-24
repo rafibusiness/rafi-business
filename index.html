@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rafi E-Commerce - Top Up Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f7f8fc;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .background {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background-color: #fff;
+      color: #333;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1d3557;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input, select {
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+      background-color: #f9f9f9;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #1d3557;
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #457b9d;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e6ffea;
+      color: #2b7a2b;
+      border-left: 5px solid #2b7a2b;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .qris-img {
+      margin-top: 10px;
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1d3557;
+      color: #fff;
+    }
+
+    #adminLogin, #historySection {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .card-nominal {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .nominal-option {
+      flex: 1 1 calc(50% - 10px);
+      background-color: #f4f6f8;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .nominal-option:hover,
+    .nominal-option.selected {
+      border-color: #1d3557;
+      background-color: #eaf3ff;
+    }
+
+    #gameImageContainer {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    #gameImageContainer img {
+      max-width: 140px;
+      border-radius: 10px;
+    }
+
+    .login-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .login-btn button {
+      background-color: transparent;
+      color: #1d3557;
+      border: 2px solid #1d3557;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn button:hover {
+      background-color: #1d3557;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-btn">
+    <button onclick="showLogin()">🔐 Login Admin</button>
+  </div>
+
+  <div class="background">
+    <div class="container">
+      <h1>🎮 Rafi E-Commerce</h1>
+      <p class="subtitle">Top Up Game Online Cepat & Aman</p>
+
+      <form id="topupForm">
+        <label for="game">Pilih Game</label>
+        <select id="game" required>
+          <option value="">-- Pilih --</option>
+          <option value="Mobile Legends">Mobile Legends</option>
+          <option value="Free Fire">Free Fire</option>
+          <option value="PUBG Mobile">PUBG Mobile</option>
+        </select>
+
+        <div id="gameImageContainer"></div>
+
+        <label for="userid">User ID</label>
+        <input type="text" id="userid" required placeholder="Contoh: 123456789" />
+
+        <label>Nominal Top Up</label>
+        <div id="nominalWrapper" class="card-nominal"></div>
+        <input type="hidden" id="nominal" required />
+
+        <label><input type="checkbox" id="firstTime" /> Top-up pertama kali</label>
+
+        <label for="metode">Metode Pembayaran</label>
+        <select id="metode" required>
+          <option value="">-- Pilih --</option>
+          <option value="QRIS">QRIS</option>
+          <option value="DANA">DANA</option>
+        </select>
+
+        <button type="submit">Top Up Sekarang</button>
+      </form>
+
+      <div id="result"></div>
+
+      <div id="adminLogin">
+        <h3>Login</h3>
+        <input type="text" id="adminUser" placeholder="Username" />
+        <input type="password" id="adminPass" placeholder="Password" />
+        <button onclick="loginAdmin()">Login</button>
+        <p id="loginMsg" style="color:red;"></p>
+      </div>
+
+      <div id="historySection">
+        <h3>📋 Histori Transaksi</h3>
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Game</th>
+              <th>ID</th>
+              <th>Nominal</th>
+              <th>Harga</th>
+              <th>Metode</th>
+              <th>Waktu</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button onclick="hapusHistori()" style="background:#b00020">Hapus Semua Histori</button>
+        <button onclick="logoutAdmin()" style="background:#555">Logout Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const gameSelect = document.getElementById('game');
+    const nominalWrapper = document.getElementById('nominalWrapper');
+    const nominalInput = document.getElementById('nominal');
+    const form = document.getElementById('topupForm');
+    const result = document.getElementById('result');
+    const historyTable = document.querySelector('#historyTable tbody');
+    const adminLogin = document.getElementById('adminLogin');
+    const historySection = document.getElementById('historySection');
+    const gameImageContainer = document.getElementById('gameImageContainer');
+
+    const ADMIN_USER = "RafiFzn";
+    const ADMIN_PASS = "Rafifzn16";
+
+    const priceList = {
+      'Mobile Legends': [
+        { label: '86 Diamonds - Rp20.000', value: 20000 },
+        { label: '172 Diamonds - Rp40.000', value: 40000 }
+      ],
+      'Free Fire': [
+        { label: '140 Diamonds - Rp20.000', value: 20000 },
+        { label: '280 Diamonds - Rp40.000 (Diskon 1.5%)', value: 40000, discount: 0.015 },
+        { label: '750 Diamonds - Rp100.000 (Diskon 16%)', value: 100000, discount: 0.16 }
+      ],
+      'PUBG Mobile': [
+        { label: '60 UC - Rp15.000', value: 15000 },
+        { label: '120 UC - Rp30.000', value: 30000 }
+      ]
+    };
+
+    const gameImages = {
+      'Mobile Legends': 'https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Mobile_Legends_Bang_Bang.png/220px-Mobile_Legends_Bang_Bang.png',
+      'Free Fire': 'https://cdn.icon-icons.com/icons2/2389/PNG/512/garena_free_fire_logo_icon_145296.png',
+      'PUBG Mobile': 'https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/PUBG_New_State_cover.jpg/220px-PUBG_New_State_cover.jpg'
+    };
+
+    gameSelect.addEventListener('change', function () {
+      const selectedGame = gameSelect.value;
+      nominalWrapper.innerHTML = '';
+      nominalInput.value = '';
+      gameImageContainer.innerHTML = gameImages[selectedGame] ? `<img src="${gameImages[selectedGame]}" />` : '';
+
+      if (priceList[selectedGame]) {
+        priceList[selectedGame].forEach((item, index) => {
+          const div = document.createElement('div');
+          div.className = 'nominal-option';
+          div.textContent = item.label;
+          div.onclick = () => {
+            document.querySelectorAll('.nominal-option').forEach(el => el.classList.remove('selected'));
+            div.classList.add('selected');
+            nominalInput.value = index;
+          };
+          nominalWrapper.appendChild(div);
+        });
+      }
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const game = gameSelect.value;
+      const userid = document.getElementById('userid').value;
+      const metode = document.getElementById('metode').value;
+      const firstTime = document.getElementById('firstTime').checked;
+      const selectedIndex = parseInt(nominalInput.value);
+      const selectedOption = priceList[game][selectedIndex];
+      let finalPrice = selectedOption.value;
+
+      if (firstTime && selectedOption.discount) {
+        finalPrice -= finalPrice * selectedOption.discount;
+      }
+
+      const waktu = new Date().toLocaleString('id-ID');
+      const paymentImg = metode === 'QRIS'
+        ? '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/QRIS_logo.svg/512px-QRIS_logo.svg.png" class="qris-img" />'
+        : '<img src="https://play-lh.googleusercontent.com/R8AepQ4qz0dklc7A_6aLKnE4K0_oIMDrDYg5zFMBqeEiDjfTWqPo1xKOb92N_yANeaY" class="qris-img" />';
+
+      result.style.display = 'block';
+      result.innerHTML = `
+        <h3>✅ Top Up Berhasil!</h3>
+        <p><strong>Game:</strong> ${game}</p>
+        <p><strong>User ID:</strong> ${userid}</p>
+        <p><strong>Nominal:</strong> ${selectedOption.label}</p>
+        <p><strong>Harga Bayar:</strong> Rp${finalPrice.toLocaleString('id-ID')}</p>
+        <p><strong>Metode Pembayaran:</strong> ${metode}</p>
+        <p>Silakan scan QR di bawah ini untuk melakukan pembayaran:</p>
+        ${paymentImg}
+        <p><em>Setelah transfer, top-up akan segera diproses.</em></p>
+      `;
+
+      const riwayat = JSON.parse(localStorage.getItem('riwayatTopup') || '[]');
+      riwayat.push({ game, userid, nominal: selectedOption.label, harga: finalPrice, metode, waktu });
+      localStorage.setItem('riwayatTopup', JSON.stringify(riwayat));
+      if (localStorage.getItem("isAdmin") === "true") loadHistory();
+    });
+
+    function loginAdmin() {
+      const user = document.getElementById('adminUser').value;
+      const pass = document.getElementById('adminPass').value;
+      const msg = document.getElementById('loginMsg');
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        localStorage.setItem("isAdmin", "true");
+        tampilkanHistori();
+      } else {
+        msg.textContent = "❌ Login gagal. Username atau password salah.";
+      }
+    }
+
+    function tampilkanHistori() {
+      historySection.style.display = 'block';
+      adminLogin.style.display = 'none';
+      loadHistory();
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem("isAdmin");
+      location.reload();
+    }
+
+    function loadHistory() {
+      historyTable.innerHTML = '';
+      const data = JSON.parse(localStorage.getItem('riwayatTopup') || '[]');
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.game}</td>
+          <td>${item.userid}</td>
+          <td>${item.nominal}</td>
+          <td>Rp${item.harga.toLocaleString('id-ID')}</td>
+          <td>${item.metode}</td>
+          <td>${item.waktu}</td>
+        `;
+        historyTable.appendChild(row);
+      });
+    }
+
+    function hapusHistori() {
+      if (confirm('Yakin ingin menghapus semua histori transaksi?')) {
+        localStorage.removeItem("riwayatTopup");
+        loadHistory();
+      }
+    }
+
+    function showLogin() {
+      adminLogin.style.display = 'block';
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("isAdmin") === "true") {
+        tampilkanHistori();
+      } else {
+        adminLogin.style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
